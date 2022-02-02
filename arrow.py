@@ -2,12 +2,14 @@ import pygame
 
 
 class Arrow(pygame.sprite.Sprite):
-    def __init__(self, screen, x, y, **kwargs):
+    def __init__(self, screen, x, y, ax, ay, **kwargs):
         super(Arrow, self).__init__(**kwargs)
         self.posX = x
         self.posY = y
         self.screen = screen
         self.source = pygame.image.load('./arrow.png').convert_alpha()
+        self.arrayX = ax
+        self.arrayY = ay
 
     def draw(self):
         self.screen.blit(self.source, (self.posX, self.posY))

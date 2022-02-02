@@ -42,6 +42,7 @@ class Game:
         self.default_height = int(self.height / self.count_height)
         self.colors = [self.WHITE, self.BLACK, self.GREEN, self.RED]
         self.squares = []
+        self.end = ()
         for i in range(0, self.count_width):
             for j in range(0, self.count_height):
                 self.squares.append(Square(self.screen, self.default_width, self.default_height, self.colors[squareArray[j][i]], i * self.default_width, j * self.default_height))
@@ -58,24 +59,47 @@ class Game:
     def findstart(self, val):
         for index, row in enumerate(squareArray):
             if val in row:
-                arrow = Arrow(self.screen, (row.index(val)) * self.default_width, index * self.default_height)
+                arrow = Arrow(self.screen, (row.index(val)) * self.default_width, index * self.default_height, row.index(val), index)
                 return arrow
+
+    def findend(self, val):
+        for index, row in enumerate(squareArray):
+            if val in row:
+                return row.index(val), index
 
     def move(self, direction):
         print(direction)
+        self.end = self.finish()
+        print(self.end[0])
         if direction == 0:
             self.arrow.posX += self.default_width
+            self.arrow.arrayX += 1
         if direction == 1:
             self.arrow.posY += self.default_height
+            self.arrow.arrayY += 1
         if direction == 2:
             self.arrow.posX -= self.default_width
+            self.arrow.arrayX -= 1
         if direction == 3:
             self.arrow.posY -= self.default_height
+            self.arrow.arrayY -= 1
+        print(self.arrow.arrayX, self.arrow.arrayY)
+
+    def endgame(self):
+        if self.arrow.arrayX == self.end[0] and self.arrow.arrayY == self.end[1]:
+            print('You Won!')
+            return True
+        return False
 
     def rotate(self, posNew, posOld):
         angle = (posOld - posNew) * 90
         self.arrow.source = pygame.transform.rotate(self.arrow.source, angle)
         self.screen.blit(self.arrow.source, (self.arrow.posX, self.arrow.posY))
+
+    def finish(self):
+        finish = self.findend(3)
+        print(finish[0])
+        return finish
 
 
 game = Game()
@@ -108,4 +132,9 @@ while Run:
                 Run = False
             elif event.key == pygame.K_SPACE:
                 game.move(facing)
+                if game.endgame():
+                    Run = False
+
+
+
     game.redraw()
