@@ -20,7 +20,7 @@ squareArray = [
 
 clock = pygame.time.Clock()
 Run = True
-
+image = pygame.image.load('./vacation.jpg')
 
 class Game:
     BLACK = (0, 0, 0)
@@ -48,12 +48,16 @@ class Game:
                 self.squares.append(Square(self.screen, self.default_width, self.default_height, self.colors[squareArray[j][i]], i * self.default_width, j * self.default_height))
         self.arrow = self.findstart(2)
 
-    def redraw(self):
-        for square in self.squares:
-            # print(square.color, square.width, square.height, square.x, square.y)
-            square.draw()
-        # self.arrow.posX += 2
-        self.arrow.draw()
+    def redraw(self, state):
+        if state == 0:
+            for square in self.squares:
+                # print(square.color, square.width, square.height, square.x, square.y)
+                square.draw()
+            # self.arrow.posX += 2
+            self.arrow.draw()
+        elif state == 1:
+            self.screen.fill(self.BLACK)
+            self.screen.blit(image, [0, 0])
         pygame.display.update()
 
     def findstart(self, val):
@@ -105,6 +109,7 @@ class Game:
 game = Game()
 
 facing = 0
+state = 0
 
 # 0 - vpravo; 1 - dolů; 2 - vlevo; 3 - nahoru
 
@@ -133,8 +138,14 @@ while Run:
             elif event.key == pygame.K_SPACE:
                 game.move(facing)
                 if game.endgame():
-                    Run = False
+                    pygame.mixer.init()
+                    pygame.mixer.music.load('vacation.mp3')
+                    pygame.mixer.music.set_volume(0.25)
+                    pygame.mixer.music.play()
+                    state = 1
 
 
 
-    game.redraw()
+
+
+    game.redraw(state)
