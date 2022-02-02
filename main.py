@@ -22,6 +22,7 @@ clock = pygame.time.Clock()
 Run = True
 image = pygame.image.load('./vacation.jpg')
 
+
 class Game:
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -73,7 +74,7 @@ class Game:
 
     def move(self, direction):
         print(direction)
-        self.end = self.finish()
+        self.end = self.findend(3)
         print(self.end[0])
         if direction == 0:
             self.arrow.posX += self.default_width
@@ -99,11 +100,6 @@ class Game:
         angle = (posOld - posNew) * 90
         self.arrow.source = pygame.transform.rotate(self.arrow.source, angle)
         self.screen.blit(self.arrow.source, (self.arrow.posX, self.arrow.posY))
-
-    def finish(self):
-        finish = self.findend(3)
-        print(finish[0])
-        return finish
 
 
 game = Game()
@@ -143,9 +139,5 @@ while Run:
                     pygame.mixer.music.set_volume(0.25)
                     pygame.mixer.music.play()
                     state = 1
-
-
-
-
 
     game.redraw(state)
