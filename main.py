@@ -49,8 +49,9 @@ class Game:
 
     def redraw(self):
         for square in self.squares:
-            print(square.color, square.width, square.height, square.x, square.y)
+            # print(square.color, square.width, square.height, square.x, square.y)
             square.draw()
+        # self.arrow.posX += 2
         self.arrow.draw()
         pygame.display.update()
 
@@ -59,18 +60,52 @@ class Game:
             if val in row:
                 arrow = Arrow(self.screen, (row.index(val)) * self.default_width, index * self.default_height)
                 return arrow
+
+    def move(self, direction):
+        print(direction)
+        if direction == 0:
+            self.arrow.posX += self.default_width
+        if direction == 1:
+            self.arrow.posY += self.default_height
+        if direction == 2:
+            self.arrow.posX -= self.default_width
+        if direction == 3:
+            self.arrow.posY -= self.default_height
+
+    def rotate(self, posNew, posOld):
+        angle = (posOld - posNew) * 90
+        self.arrow.source = pygame.transform.rotate(self.arrow.source, angle)
+        self.screen.blit(self.arrow.source, (self.arrow.posX, self.arrow.posY))
+
+
 game = Game()
 
+facing = 0
+
+# 0 - vpravo; 1 - dolů; 2 - vlevo; 3 - nahoru
 
 while Run:
     clock.tick(game.FPS)
-    # keys = pygame.key.get_pressed()
-    # if keys[pygame.K_LEFT]:
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_d] and facing != 0:
+        game.rotate(0, facing)
+        facing = 0
+    elif keys[pygame.K_s] and facing != 1:
+        game.rotate(1, facing)
+        facing = 1
+    elif keys[pygame.K_a] and facing != 2:
+        game.rotate(2, facing)
+        facing = 2
+    elif keys[pygame.K_w] and facing != 3:
+        game.rotate(3, facing)
+        facing = 3
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 Run = False
+            elif event.key == pygame.K_SPACE:
+                game.move(facing)
     game.redraw()
-    #     self.sipka = self.findstart(2)
